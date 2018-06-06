@@ -15,6 +15,7 @@ class PerksPage extends StatefulWidget{
 class _PerksPageState extends State <PerksPage> {
 
   int storeNum = 1;
+  String _currentUser;
 
   var locations = {
     1: [-108.558485, 45.783883],
@@ -30,7 +31,7 @@ class _PerksPageState extends State <PerksPage> {
   @override
   void initState() {
     super.initState();
-    checkGps();
+    _currentUser = null;
   }
 
   checkIn(var location) async {
@@ -80,7 +81,10 @@ class _PerksPageState extends State <PerksPage> {
     return new Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-//        _getPerkCard(cardNumber),
+        new Title(
+          child: new Text("Logged In As"),
+          color: Colors.black,
+        ),
         new Container(
           margin: EdgeInsets.all(8.0),
           child: new FlatButton(

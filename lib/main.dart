@@ -1,8 +1,18 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'perks.dart';
 import 'home.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-
+final FirebaseAuth _auth = FirebaseAuth.instance;
+GoogleSignIn _googleSignIn = new GoogleSignIn(
+  scopes: [
+    'email',
+    'https://www.googleapis.com/auth/contacts.readonly',
+  ],
+);
 void main() => runApp(new MyApp());
 
 class MyApp extends StatelessWidget {
@@ -40,6 +50,32 @@ class _MyHomePageState extends State<MyHomePage> {
     return new Scaffold(
       appBar: new AppBar(
         title: new Text(widget.title),
+        actions: <Widget>[
+          new PopupMenuButton(
+            onSelected: (int choice) {
+              switch (choice){
+                case 1: //sign in
+                  _handleSignIn();
+                  break;
+                case 2: //sign out
+
+                  break;
+              }
+            },
+              itemBuilder: (BuildContext buildcontext) {
+                return [
+                  new PopupMenuItem<int>(
+                    child: new Text("Sign-In"),
+                    value: 1,
+                  ),
+                  new PopupMenuItem<int>(
+                    child: new Text("Sign-Out"),
+                    value: 2,
+                  )
+                ];
+              }
+          ),
+        ],
       ),
       body: (_state==0 ? new HomePage() : new PerksPage()),
       bottomNavigationBar: new BottomNavigationBar(
@@ -73,5 +109,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void stateChanged(int state) {
     _state = state;
+  }
+
+  Future<FirebaseUser> _handleSignIn() async {
+    GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+    GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    FirebaseUser user = await _auth.signInWithGoogle(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+    print("signed in " + user.displayName);
+    return user;
   }
 }

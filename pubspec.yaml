@@ -2,6 +2,8 @@ name: cb_test_v2
 description: CB_Test_V2
 
 dependencies:
+  google_sign_in:
+  firebase_auth:
   location: "^1.3.4"
   http:
   transparent_image:
